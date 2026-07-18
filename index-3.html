@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexus Topup — Verified Game Top-up Shop</title>
+<meta name="description" content="Fast, verified top-up for PUBG Mobile, Free Fire, Fortnite and more. bKash, Nagad, Rocket accepted.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+<style>
+/* ==========================================================================
+   NexTop — verified game top-up shop
+   Neon dark gaming aesthetic: deep navy/black base, electric purple + cyan + lime accents
+   ========================================================================== */
+:root{
+  --bg:          #060a14;
+  --bg-elevated: #0b1220;
+  --bg-card:     #10192c;
+  --border:      #1e2c47;
+  --text:        #eef2fb;
+  --text-dim:    #93a1c2;
+  --text-faint:  #5d6b8c;
+  --purple:      #2563eb;   /* primary blue (kept variable name for minimal diff) */
+  --cyan:        #38bdf8;   /* sky blue accent */
+  --lime:        #34d399;  /* success green, used sparingly */
+  --pink:        #60a5fa;
+  --gradient:    linear-gradient(135deg, #1d4ed8, #38bdf8);
+
+  --font-display: 'Rajdhani', sans-serif;
+  --font-body:    'Poppins', sans-serif;
+
+  --radius: 16px;
+  --shadow: 0 25px 60px rgba(0,0,0,0.5);
+  --transition: 0.25s ease;
+}
+
+*,*::before,*::after{ box-sizing: border-box; margin: 0; padding: 0; }
+html{ scroll-behavior: smooth; }
+body{
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+img{ max-width: 100%; display: block; }
+a{ color: inherit; text-decoration: none; }
+button{ font-family: inherit; border: none; background: none; color: inherit; cursor: pointer; }
+ul{ list-style: none; }
+section{ padding: 5rem 0; }
+::selection{ background: var(--purple); color: #fff; }
+a:focus-visible, button:focus-visible{ outline: 2px solid var(--cyan); outline-offset: 3px; }
+
+.wrap{ max-width: 1140px; margin: 0 auto; padding: 0 1.5rem; }
+
+.progress-bar-wrap{ position: fixed; top: 0; left: 0; width: 100%; height: 3px; z-index: 500; }
+.progress-bar{ height: 100%; width: 0%; background: var(--gradient); }
+
+.section-label{ font-family: var(--font-display); font-weight: 700; text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem; color: var(--cyan); margin-bottom: 0.6rem; }
+.section-title{ font-family: var(--font-display); font-weight: 700; font-size: clamp(1.6rem, 4vw, 2.4rem); margin-bottom: 2.5rem; }
+
+/* Buttons */
+.btn-primary{
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+  padding: 0.85rem 1.8rem; border-radius: 50px; font-weight: 600; font-size: 0.95rem;
+  background: var(--gradient); color: #ffffff;
+  box-shadow: 0 10px 30px rgba(37,99,235,0.45);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+.btn-primary:hover{ transform: translateY(-3px); box-shadow: 0 16px 40px rgba(37,99,235,0.6); }
+.btn-primary[disabled]{ opacity: 0.4; pointer-events: none; }
+.btn-ghost{
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 0.85rem 1.6rem; border-radius: 50px; font-weight: 600; font-size: 0.95rem;
+  border: 1px solid var(--border); color: var(--text);
+  transition: border-color var(--transition), color var(--transition);
+}
+.btn-ghost:hover{ border-color: var(--cyan); color: var(--cyan); }
+
+/* ==========================================================================
+   HEADER / NAV
+   ========================================================================== */
+.site-header{
+  position: sticky; top: 0; z-index: 200;
+  background: rgba(7,7,15,0.8); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+.nav{ display: flex; align-items: center; justify-content: space-between; padding: 1rem 0; }
+.logo{ font-family: var(--font-display); font-weight: 700; font-size: 1.3rem; letter-spacing: 0.5px; }
+.logo span{ color: var(--cyan); }
+.nav-links{ display: flex; gap: 2rem; }
+.nav-links a{ font-size: 0.92rem; color: var(--text-dim); transition: color var(--transition); }
+.nav-links a:hover{ color: var(--text); }
+.nav-actions{ display: flex; align-items: center; gap: 0.8rem; }
+.nav-cta{ padding: 0.6rem 1.3rem; font-size: 0.85rem; }
+.icon-btn{ width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--bg-card); border: 1px solid var(--border); }
+.nav-toggle{ display: none; }
+
+@media (max-width: 780px){
+  .nav-links{
+    position: fixed; top: 62px; left: 0; right: 0; flex-direction: column; align-items: flex-start;
+    background: var(--bg-elevated); border-bottom: 1px solid var(--border);
+    padding: 1.2rem 1.5rem; gap: 1rem;
+    transform: translateY(-8px); opacity: 0; visibility: hidden; transition: all var(--transition);
+  }
+  .nav-links.open{ transform: translateY(0); opacity: 1; visibility: visible; }
+  .nav-toggle{ display: flex; }
+  .nav-cta{ display: none; }
+}
+
+/* ==========================================================================
+   HERO
+   ========================================================================== */
+.hero{ position: relative; padding: 5rem 0 4rem; overflow: hidden; }
+.hero-bg{ position: absolute; inset: 0; z-index: 0; }
+.glow{ position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.35; }
+.glow-1{ width: 45vw; height: 45vw; background: var(--purple); top: -15%; left: -10%; }
+.glow-2{ width: 40vw; height: 40vw; background: var(--cyan); bottom: -20%; right: -5%; }
+.hero-content{ position: relative; z-index: 2; max-width: 720px; }
+.verified-pill{
+  display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; font-weight: 600;
+  background: rgba(163,230,53,0.12); color: var(--lime); border: 1px solid rgba(163,230,53,0.3);
+  padding: 0.4rem 0.9rem; border-radius: 50px; margin-bottom: 1.3rem;
+}
+.hero h1{ font-family: var(--font-display); font-weight: 700; font-size: clamp(2rem, 6vw, 3.4rem); line-height: 1.15; margin-bottom: 1.1rem; }
+.hero h1 .accent{ background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.hero p{ color: var(--text-dim); font-size: 1.05rem; max-width: 560px; margin-bottom: 1.8rem; }
+.hero-actions{ display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 2.5rem; }
+.trust-row{ display: flex; flex-wrap: wrap; gap: 1.6rem; }
+.trust-item{ display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: var(--text-dim); }
+.trust-icon{ font-size: 1rem; }
+
+/* ==========================================================================
+   GAMES GRID
+   ========================================================================== */
+.games-grid{ display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.3rem; }
+.game-card{
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 2rem 1.5rem; text-align: left; display: flex; flex-direction: column; gap: 0.7rem;
+  transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+}
+.game-card:hover{ transform: translateY(-6px); border-color: var(--purple); box-shadow: var(--shadow); }
+.game-art{ width: 56px; height: 56px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; }
+.pubg-art{ background: linear-gradient(135deg, #f59e0b, #ef4444); }
+.freefire-art{ background: linear-gradient(135deg, #f97316, #dc2626); }
+.fortnite-art{ background: linear-gradient(135deg, #8b5cf6, #6366f1); }
+.mlbb-art{ background: linear-gradient(135deg, #22d3ee, #0ea5e9); }
+.game-card h3{ font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; }
+.game-card p{ color: var(--text-faint); font-size: 0.82rem; }
+
+/* ==========================================================================
+   ORDER MODAL
+   ========================================================================== */
+.modal{
+  position: fixed; inset: 0; z-index: 3000; display: flex; align-items: center; justify-content: center;
+  background: rgba(4,4,10,0.8); backdrop-filter: blur(4px); padding: 1.2rem;
+  opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+.modal.active{ opacity: 1; visibility: visible; }
+.modal-card{
+  width: 100%; max-width: 460px; max-height: 88vh; overflow-y: auto;
+  background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 20px;
+  padding: 1.8rem; position: relative; box-shadow: var(--shadow);
+}
+.modal-close{ position: absolute; top: 1rem; right: 1.1rem; font-size: 1.1rem; color: var(--text-dim); }
+.modal-card h3{ font-family: var(--font-display); font-size: 1.25rem; margin-bottom: 1.3rem; padding-right: 1.5rem; }
+
+.step-indicator{ display: flex; align-items: center; justify-content: center; gap: 0.4rem; margin-bottom: 1.6rem; }
+.step-dot{ width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; background: var(--bg-card); border: 1px solid var(--border); color: var(--text-faint); }
+.step-dot.active{ background: var(--gradient); color: #ffffff; border-color: transparent; }
+.step-dot.done{ background: var(--lime); color: #06251c; border-color: transparent; }
+.step-line{ width: 24px; height: 2px; background: var(--border); }
+
+.step-panel{ display: none; }
+.step-panel.active{ display: block; }
+
+.package-grid{ display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
+.package-option{
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
+  padding: 1rem 0.8rem; text-align: center; cursor: pointer; transition: all var(--transition);
+}
+.package-option:hover{ border-color: var(--purple); }
+.package-option.selected{ border-color: var(--cyan); background: rgba(34,211,238,0.08); }
+.package-amount{ font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; }
+.package-price{ font-size: 0.8rem; color: var(--text-dim); margin-top: 0.2rem; }
+.package-bonus{ font-size: 0.68rem; color: var(--lime); margin-top: 0.15rem; }
+
+.form-group{ margin-bottom: 1.1rem; }
+.form-group label{ display: block; font-size: 0.82rem; color: var(--text-dim); margin-bottom: 0.4rem; }
+.form-group input{
+  width: 100%; padding: 0.75rem 1rem; border-radius: 10px; background: var(--bg-card);
+  border: 1px solid var(--border); color: var(--text); font-size: 0.95rem; outline: none;
+  transition: border-color var(--transition);
+}
+.form-group input:focus{ border-color: var(--cyan); }
+.form-hint{ font-size: 0.78rem; color: var(--text-faint); margin-bottom: 1rem; line-height: 1.5; }
+
+.payment-grid{ display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.8rem; margin-bottom: 0.5rem; }
+.payment-option{
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
+  padding: 1rem; font-size: 0.9rem; font-weight: 600; transition: all var(--transition);
+}
+.payment-option:hover{ border-color: var(--purple); }
+.payment-option.selected{ border-color: var(--cyan); background: rgba(34,211,238,0.08); }
+
+.order-summary{ background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 1.1rem 1.2rem; margin-bottom: 1rem; font-size: 0.9rem; }
+.order-summary div{ display: flex; justify-content: space-between; padding: 0.3rem 0; color: var(--text-dim); }
+.order-summary div strong{ color: var(--text); }
+
+.modal-actions{ display: flex; justify-content: space-between; gap: 1rem; margin-top: 0.5rem; }
+
+/* ==========================================================================
+   HOW IT WORKS
+   ========================================================================== */
+.how-grid{ display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.3rem; }
+.how-card{ background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.8rem; }
+.how-num{ font-family: var(--font-display); font-weight: 700; font-size: 1.6rem; color: var(--purple); }
+.how-card h3{ font-family: var(--font-display); font-size: 1.1rem; margin: 0.6rem 0 0.5rem; }
+.how-card p{ color: var(--text-dim); font-size: 0.88rem; }
+
+/* ==========================================================================
+   REVIEWS
+   ========================================================================== */
+.reviews-grid{ display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.3rem; }
+.review-card{ background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.6rem; }
+.stars{ color: var(--lime); letter-spacing: 2px; margin-bottom: 0.7rem; }
+.review-card p{ color: var(--text-dim); font-size: 0.92rem; margin-bottom: 0.8rem; }
+.review-name{ font-size: 0.82rem; color: var(--text-faint); }
+
+/* ==========================================================================
+   FAQ
+   ========================================================================== */
+.faq-list{ max-width: 700px; }
+.faq-item{ border-bottom: 1px solid var(--border); }
+.faq-question{
+  width: 100%; display: flex; justify-content: space-between; align-items: center;
+  padding: 1.1rem 0; font-size: 0.98rem; font-weight: 600; text-align: left;
+}
+.faq-toggle{ color: var(--cyan); font-size: 1.1rem; transition: transform var(--transition); }
+.faq-item.open .faq-toggle{ transform: rotate(45deg); }
+.faq-answer{ max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+.faq-item.open .faq-answer{ max-height: 200px; }
+.faq-answer p{ color: var(--text-dim); font-size: 0.9rem; padding-bottom: 1.1rem; line-height: 1.6; }
+
+/* ==========================================================================
+   FOOTER
+   ========================================================================== */
+.site-footer{ border-top: 1px solid var(--border); padding: 3rem 0 1.5rem; }
+.footer-grid{ display: flex; flex-wrap: wrap; gap: 2.5rem; justify-content: space-between; margin-bottom: 2rem; }
+.footer-tag{ color: var(--text-faint); font-size: 0.85rem; margin-top: 0.6rem; max-width: 220px; }
+.footer-col h4{ font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-faint); margin-bottom: 0.8rem; }
+.footer-col a{ display: block; color: var(--text-dim); font-size: 0.88rem; margin-bottom: 0.6rem; transition: color var(--transition); }
+.footer-col a:hover{ color: var(--cyan); }
+.footer-bottom{ border-top: 1px solid var(--border); padding-top: 1.3rem; }
+.footer-bottom p{ font-size: 0.75rem; color: var(--text-faint); }
+
+/* ==========================================================================
+   BACK TO TOP
+   ========================================================================== */
+.back-to-top{
+  position: fixed; bottom: 1.5rem; right: 1.5rem; width: 46px; height: 46px; border-radius: 50%;
+  background: var(--bg-card); border: 1px solid var(--border); color: var(--text);
+  display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
+  opacity: 0; visibility: hidden; transform: translateY(10px); z-index: 400;
+  transition: all var(--transition);
+}
+.back-to-top.show{ opacity: 1; visibility: visible; transform: translateY(0); }
+.back-to-top:hover{ border-color: var(--cyan); }
+
+/* ==========================================================================
+   HERO OFFER BADGES
+   ========================================================================== */
+.offer-row{ display: flex; flex-wrap: wrap; gap: 0.7rem; margin-top: 1.6rem; }
+.offer-pill{ font-size: 0.78rem; font-weight: 600; padding: 0.4rem 0.9rem; border-radius: 50px; border: 1px solid var(--border); background: var(--bg-card); }
+.offer-weekly{ color: #fb923c; }
+.offer-monthly{ color: var(--cyan); }
+.offer-discount{ color: var(--lime); }
+
+/* ==========================================================================
+   HEADER: SEARCH + WALLET
+   ========================================================================== */
+.nav-search{ flex: 1; max-width: 340px; margin: 0 1.5rem; display: none; }
+.nav-search input{
+  width: 100%; padding: 0.55rem 1rem; border-radius: 50px; background: var(--bg-card);
+  border: 1px solid var(--border); color: var(--text); font-size: 0.85rem; outline: none;
+}
+.nav-search input:focus{ border-color: var(--cyan); }
+.wallet-badge{
+  display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; font-weight: 600;
+  background: var(--bg-card); border: 1px solid var(--border); padding: 0.5rem 0.9rem; border-radius: 50px;
+  color: var(--lime);
+}
+@media (min-width: 900px){ .nav-search{ display: block; } }
+
+/* ==========================================================================
+   CATEGORY ROW
+   ========================================================================== */
+.category-row{ display: flex; flex-wrap: wrap; gap: 0.7rem; }
+.category-pill{
+  font-size: 0.85rem; font-weight: 600; padding: 0.55rem 1.1rem; border-radius: 50px;
+  border: 1px solid var(--border); background: var(--bg-card); color: var(--text-dim);
+  transition: all var(--transition);
+}
+.category-pill:hover{ border-color: var(--cyan); color: var(--text); }
+.category-pill.active{ background: var(--gradient); color: #fff; border-color: transparent; }
+
+/* ==========================================================================
+   PRODUCT CARDS (top-up + subscriptions + SMM + misc)
+   ========================================================================== */
+.product-grid{ display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 1.1rem; }
+.product-card{
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 1.4rem 1.2rem; text-align: left; display: flex; flex-direction: column; gap: 0.5rem;
+  transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+}
+.product-card:hover{ transform: translateY(-5px); border-color: var(--cyan); box-shadow: var(--shadow); }
+.product-card.hidden{ display: none; }
+.product-art{ width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-bottom: 0.2rem; }
+.sub-art{ background: linear-gradient(135deg, #ef4444, #f87171); }
+.smm-art{ background: linear-gradient(135deg, #a855f7, #d946ef); }
+.id-art{ background: linear-gradient(135deg, #ef4444, #facc15); }
+.mystery-art{ background: linear-gradient(135deg, #f59e0b, #eab308); }
+.levelup-art{ background: linear-gradient(135deg, var(--cyan), var(--purple)); }
+.product-tag{ font-size: 0.65rem; font-weight: 700; letter-spacing: 0.5px; color: var(--cyan); }
+.product-card h3{ font-family: var(--font-display); font-size: 1rem; font-weight: 700; }
+.product-card p{ color: var(--lime); font-size: 0.82rem; font-weight: 600; }
+
+/* ==========================================================================
+   LIVE ORDERS
+   ========================================================================== */
+.live-dot{ display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--lime); margin-right: 0.4rem; animation: liveDotPulse 1.4s ease-in-out infinite; vertical-align: middle; }
+@keyframes liveDotPulse{ 0%,100%{ opacity: 1; } 50%{ opacity: 0.3; } }
+.panel{ background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 1.3rem; }
+table{ width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+th, td{ text-align: left; padding: 0.7rem 0.6rem; border-bottom: 1px solid var(--border); white-space: nowrap; }
+th{ color: var(--text-faint); font-weight: 600; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px; }
+.table-scroll{ overflow-x: auto; }
+.status-pill{ padding: 0.2rem 0.6rem; border-radius: 50px; font-size: 0.72rem; font-weight: 600; }
+.status-pending{ background: rgba(250,204,21,0.12); color: #facc15; }
+.status-completed{ background: rgba(34,197,94,0.12); color: var(--lime); }
+.order-row-new{ animation: rowFadeIn 0.5s ease; }
+@keyframes rowFadeIn{ from{ opacity: 0; background: rgba(59,130,246,0.15); } to{ opacity: 1; } }
+
+/* ==========================================================================
+   AUTH MODAL (login/register tabs)
+   ========================================================================== */
+.auth-tabs{ display: flex; gap: 0.5rem; margin-bottom: 1.5rem; background: var(--bg-card); border-radius: 12px; padding: 0.3rem; }
+.auth-tab{ flex: 1; text-align: center; padding: 0.6rem; border-radius: 9px; font-size: 0.88rem; font-weight: 600; color: var(--text-faint); }
+.auth-tab.active{ background: var(--gradient); color: #fff; }
+.auth-panel{ display: none; }
+.auth-panel.active{ display: block; }
+.demo-notice{ font-size: 0.72rem; color: var(--text-faint); text-align: center; line-height: 1.6; margin-top: 1rem; }
+
+@media (max-width: 480px){
+  section{ padding: 3.5rem 0; }
+  .package-grid, .payment-grid{ grid-template-columns: 1fr 1fr; }
+}
+
+</style>
+</head>
+<body>
+
+  <div class="progress-bar-wrap" aria-hidden="true"><div id="progressBar" class="progress-bar"></div></div>
+
+  <!-- ============ HEADER ============ -->
+  <header class="site-header">
+    <div class="wrap nav">
+      <a href="#home" class="logo">Nexus<span>Topup</span></a>
+
+      <div class="nav-search">
+        <input type="text" id="searchInput" placeholder="Search Free Fire, PUBG, YouTube Premium...">
+      </div>
+
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#categories">Categories</a></li>
+        <li><a href="#products">Top-up</a></li>
+        <li><a href="#live-orders">Live Orders</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button class="wallet-badge" id="walletBadge">💰 <span id="walletAmount">৳0</span></button>
+        <button class="btn-ghost nav-login" id="loginNavBtn">Login</button>
+        <button class="icon-btn nav-toggle" id="navToggle" aria-label="Toggle menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" id="home">
+    <div class="hero-bg" aria-hidden="true">
+      <div class="glow glow-1"></div>
+      <div class="glow glow-2"></div>
+    </div>
+    <div class="wrap hero-content">
+      <span class="verified-pill">✓ Verified Reseller — 4,800+ Orders Delivered</span>
+      <h1>Top-up Your Favorite Games. <span class="accent">Instantly.</span></h1>
+      <p>PUBG Mobile UC, Free Fire Diamonds, Fortnite V-Bucks &amp; more — verified delivery, real support, no shared or banned accounts.</p>
+      <div class="hero-actions">
+        <a href="#products" class="btn-primary">Browse Top-up Packages</a>
+        <a href="#how" class="btn-ghost">How It Works</a>
+      </div>
+      <div class="trust-row">
+        <div class="trust-item"><span class="trust-icon">⚡</span>Instant Delivery</div>
+        <div class="trust-item"><span class="trust-icon">🛡️</span>100% Verified Orders</div>
+        <div class="trust-item"><span class="trust-icon">💬</span>24/7 Support</div>
+        <div class="trust-item"><span class="trust-icon">💳</span>bKash · Nagad · Rocket</div>
+      </div>
+      <div class="offer-row">
+        <span class="offer-pill offer-weekly">🔥 Weekly Deal — Save 15%</span>
+        <span class="offer-pill offer-monthly">📅 Monthly Bundle — Best Value</span>
+        <span class="offer-pill offer-discount">🎉 Today Only — Extra Bonus</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CATEGORIES ============ -->
+  <section class="categories-section" id="categories">
+    <div class="wrap">
+      <p class="section-label">Browse</p>
+      <h2 class="section-title">All Categories</h2>
+      <div class="category-row" id="categoryRow">
+        <button class="category-pill active" data-filter="all">🌐 All</button>
+        <button class="category-pill" data-filter="freefire">🔥 Free Fire</button>
+        <button class="category-pill" data-filter="pubg">🎯 PUBG</button>
+        <button class="category-pill" data-filter="subscriptions">📺 Subscriptions</button>
+        <button class="category-pill" data-filter="smm">📈 SMM</button>
+        <button class="category-pill" data-filter="indonesia">🇮🇩 Indonesia</button>
+        <button class="category-pill" data-filter="mystery">🎁 Mystery Box</button>
+        <button class="category-pill" data-filter="levelup">⬆️ Level Up</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PRODUCTS ============ -->
+  <section class="products-section" id="products">
+    <div class="wrap">
+      <p class="section-label">Products</p>
+      <h2 class="section-title">Top-up &amp; Digital Products</h2>
+
+      <div class="product-grid" id="productGrid">
+        <button class="product-card" data-product="freefire" data-category="freefire">
+          <div class="product-art freefire-art">🔥</div>
+          <span class="product-tag">FREE FIRE</span>
+          <h3>UID Diamond Top-up</h3>
+          <p>From ৳80</p>
+        </button>
+        <button class="product-card" data-product="ff-weekly" data-category="freefire">
+          <div class="product-art freefire-art">📅</div>
+          <span class="product-tag">FREE FIRE</span>
+          <h3>Weekly Membership</h3>
+          <p>From ৳140</p>
+        </button>
+        <button class="product-card" data-product="ff-monthly" data-category="freefire">
+          <div class="product-art freefire-art">🗓️</div>
+          <span class="product-tag">FREE FIRE</span>
+          <h3>Monthly Membership</h3>
+          <p>From ৳700</p>
+        </button>
+        <button class="product-card" data-product="ff-weekly-lite" data-category="freefire">
+          <div class="product-art freefire-art">💡</div>
+          <span class="product-tag">FREE FIRE</span>
+          <h3>Weekly Lite</h3>
+          <p>From ৳70</p>
+        </button>
+        <button class="product-card" data-product="ff-evo" data-category="freefire">
+          <div class="product-art freefire-art">🧬</div>
+          <span class="product-tag">FREE FIRE</span>
+          <h3>Evo Access</h3>
+          <p>From ৳120</p>
+        </button>
+        <button class="product-card" data-product="ff-ebadge" data-category="freefire">
+          <div class="product-art freefire-art">🎖️</div>
+          <span class="product-tag">FREE FIRE</span>
+          <h3>E Badge</h3>
+          <p>From ৳50</p>
+        </button>
+        <button class="product-card" data-product="ff-likes" data-category="freefire">
+          <div class="product-art freefire-art">👍</div>
+          <span class="product-tag">FREE FIRE</span>
+          <h3>100 Profile Likes</h3>
+          <p>From ৳30</p>
+        </button>
+
+        <button class="product-card" data-product="pubg" data-category="pubg">
+          <div class="product-art pubg-art">🎯</div>
+          <span class="product-tag">PUBG</span>
+          <h3>UC Top-up</h3>
+          <p>From ৳85</p>
+        </button>
+
+        <button class="product-card" data-product="fortnite" data-category="pubg">
+          <div class="product-art fortnite-art">🎮</div>
+          <span class="product-tag">FORTNITE</span>
+          <h3>V-Bucks Top-up</h3>
+          <p>From ৳750</p>
+        </button>
+
+        <button class="product-card" data-product="mlbb" data-category="pubg">
+          <div class="product-art mlbb-art">⚔️</div>
+          <span class="product-tag">MOBILE LEGENDS</span>
+          <h3>Diamonds Top-up</h3>
+          <p>From ৳90</p>
+        </button>
+
+        <button class="product-card" data-product="youtube-premium" data-category="subscriptions">
+          <div class="product-art sub-art">▶️</div>
+          <span class="product-tag">SUBSCRIPTION</span>
+          <h3>YouTube Premium</h3>
+          <p>From ৳250</p>
+        </button>
+        <button class="product-card" data-product="telegram-premium" data-category="subscriptions">
+          <div class="product-art sub-art">✈️</div>
+          <span class="product-tag">SUBSCRIPTION</span>
+          <h3>Telegram Premium</h3>
+          <p>From ৳300</p>
+        </button>
+
+        <button class="product-card" data-product="smm-facebook" data-category="smm">
+          <div class="product-art smm-art">📘</div>
+          <span class="product-tag">SMM</span>
+          <h3>Facebook Followers/Likes</h3>
+          <p>From ৳100</p>
+        </button>
+        <button class="product-card" data-product="smm-instagram" data-category="smm">
+          <div class="product-art smm-art">📸</div>
+          <span class="product-tag">SMM</span>
+          <h3>Instagram Followers/Likes</h3>
+          <p>From ৳100</p>
+        </button>
+        <button class="product-card" data-product="smm-tiktok" data-category="smm">
+          <div class="product-art smm-art">🎵</div>
+          <span class="product-tag">SMM</span>
+          <h3>TikTok Followers/Views</h3>
+          <p>From ৳90</p>
+        </button>
+        <button class="product-card" data-product="smm-youtube" data-category="smm">
+          <div class="product-art smm-art">📹</div>
+          <span class="product-tag">SMM</span>
+          <h3>YouTube Views/Subscribers</h3>
+          <p>From ৳150</p>
+        </button>
+
+        <button class="product-card" data-product="indonesia-topup" data-category="indonesia">
+          <div class="product-art id-art">🇮🇩</div>
+          <span class="product-tag">INDONESIA</span>
+          <h3>Indonesia Server Top-up</h3>
+          <p>From ৳100</p>
+        </button>
+
+        <button class="product-card" data-product="mystery-box" data-category="mystery">
+          <div class="product-art mystery-art">🎁</div>
+          <span class="product-tag">MYSTERY BOX</span>
+          <h3>Free Fire Mystery Box</h3>
+          <p>From ৳50</p>
+        </button>
+
+        <button class="product-card" data-product="level-up" data-category="levelup">
+          <div class="product-art levelup-art">⬆️</div>
+          <span class="product-tag">LEVEL UP</span>
+          <h3>Level Up Package</h3>
+          <p>From ৳70</p>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ LIVE ORDERS ============ -->
+  <section class="live-orders-section" id="live-orders">
+    <div class="wrap">
+      <p class="section-label"><span class="live-dot"></span> Live</p>
+      <h2 class="section-title">Recent Orders</h2>
+      <div class="panel">
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th>Time</th><th>Customer</th><th>Item</th><th>Status</th></tr></thead>
+            <tbody id="liveOrdersBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ORDER MODAL ============ -->
+  <div class="modal" id="orderModal">
+    <div class="modal-card">
+      <button class="modal-close" id="modalClose" aria-label="Close">✕</button>
+
+      <!-- Step indicator -->
+      <div class="step-indicator">
+        <span class="step-dot active" data-step="1">1</span>
+        <span class="step-line"></span>
+        <span class="step-dot" data-step="2">2</span>
+        <span class="step-line"></span>
+        <span class="step-dot" data-step="3">3</span>
+        <span class="step-line"></span>
+        <span class="step-dot" data-step="4">4</span>
+      </div>
+
+      <!-- Step 1: package selection -->
+      <div class="step-panel active" id="step1">
+        <h3 id="modalGameTitle">Select a Package</h3>
+        <div class="package-grid" id="packageGrid"></div>
+      </div>
+
+      <!-- Step 2: account details -->
+      <div class="step-panel" id="step2">
+        <h3>Enter Your Account Details</h3>
+        <div class="form-group">
+          <label id="idLabel1">Player ID</label>
+          <input type="text" id="playerIdInput" placeholder="e.g. 5123456789">
+        </div>
+        <div class="form-group" id="zoneIdGroup" style="display:none;">
+          <label>Zone ID</label>
+          <input type="text" id="zoneIdInput" placeholder="e.g. 2223">
+        </div>
+        <p class="form-hint">⚠️ Double check your ID — top-ups sent to the wrong account can't be reversed.</p>
+        <div class="modal-actions">
+          <button class="btn-ghost" data-back>Back</button>
+          <button class="btn-primary" id="toStep3">Continue</button>
+        </div>
+      </div>
+
+      <!-- Step 3: payment method -->
+      <div class="step-panel" id="step3">
+        <h3>Choose Payment Method</h3>
+        <div class="payment-grid" id="paymentGrid">
+          <button class="payment-option" data-method="bKash">📱 bKash</button>
+          <button class="payment-option" data-method="Nagad">📱 Nagad</button>
+          <button class="payment-option" data-method="Rocket">📱 Rocket</button>
+          <button class="payment-option" data-method="Card">💳 Debit/Credit Card</button>
+        </div>
+        <div class="modal-actions">
+          <button class="btn-ghost" data-back>Back</button>
+          <button class="btn-primary" id="toStep4">Review Order</button>
+        </div>
+      </div>
+
+      <!-- Step 4: confirm + send order via WhatsApp -->
+      <div class="step-panel" id="step4">
+        <h3>Confirm Your Order</h3>
+        <div class="order-summary" id="orderSummary"></div>
+        <p class="form-hint">This site doesn't process payments directly yet — tapping below opens WhatsApp with your order pre-filled so our team can verify and confirm payment with you directly.</p>
+        <div class="modal-actions">
+          <button class="btn-ghost" data-back>Back</button>
+          <a class="btn-primary" id="sendOrderBtn" rel="noopener">Send Order via WhatsApp</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ HOW IT WORKS ============ -->
+  <section class="how-section" id="how">
+    <div class="wrap">
+      <p class="section-label">Simple Process</p>
+      <h2 class="section-title">How top-up works here</h2>
+      <div class="how-grid">
+        <div class="how-card">
+          <span class="how-num">01</span>
+          <h3>Pick a Package</h3>
+          <p>Choose your game and the amount of UC, Diamonds, or V-Bucks you want.</p>
+        </div>
+        <div class="how-card">
+          <span class="how-num">02</span>
+          <h3>Enter Your ID &amp; Pay</h3>
+          <p>Give us your Player ID (and Zone ID if needed), then pay via bKash, Nagad, or Rocket.</p>
+        </div>
+        <div class="how-card">
+          <span class="how-num">03</span>
+          <h3>We Verify</h3>
+          <p>Our team double-checks your ID and payment before sending anything — no guesswork.</p>
+        </div>
+        <div class="how-card">
+          <span class="how-num">04</span>
+          <h3>Instant Delivery</h3>
+          <p>Once verified, your top-up lands in your account — usually within minutes.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ REVIEWS ============ -->
+  <section class="reviews-section" id="reviews">
+    <div class="wrap">
+      <p class="section-label">What Players Say</p>
+      <h2 class="section-title">Trusted by regular top-up buyers</h2>
+      <div class="reviews-grid">
+        <div class="review-card">
+          <div class="stars">★★★★★</div>
+          <p>"Ordered UC at midnight, got it in 10 minutes. ID verification made me trust it more."</p>
+          <span class="review-name">— Tanvir R.</span>
+        </div>
+        <div class="review-card">
+          <div class="stars">★★★★★</div>
+          <p>"Free Fire diamonds delivered fast, bKash payment was smooth. Will order again."</p>
+          <span class="review-name">— Mim A.</span>
+        </div>
+        <div class="review-card">
+          <div class="stars">★★★★★</div>
+          <p>"Was skeptical about V-Bucks top-up sites but this one actually verifies your order first."</p>
+          <span class="review-name">— Rifat H.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <section class="faq-section" id="faq">
+    <div class="wrap">
+      <p class="section-label">Questions</p>
+      <h2 class="section-title">Frequently Asked</h2>
+      <div class="faq-list">
+        <div class="faq-item">
+          <button class="faq-question">Is this safe for my game account? <span class="faq-toggle">+</span></button>
+          <div class="faq-answer"><p>Yes — we only top-up in-game currency to the Player ID you provide. We never ask for your account password, and nothing about your account login is touched.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">How long does delivery take? <span class="faq-toggle">+</span></button>
+          <div class="faq-answer"><p>Most orders are verified and delivered within 5–15 minutes. During high-traffic hours it can take up to an hour.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">What if I enter the wrong Player ID? <span class="faq-toggle">+</span></button>
+          <div class="faq-answer"><p>Top-ups sent to an incorrect ID cannot be reversed or refunded, so always double-check your ID before confirming. Our team also does a manual check before sending.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">What payment methods do you accept? <span class="faq-toggle">+</span></button>
+          <div class="faq-answer"><p>bKash, Nagad, Rocket, and debit/credit card. Payment is confirmed directly with our team over WhatsApp before delivery.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ LOGIN / REGISTER MODAL ============ -->
+  <div class="modal" id="authModal">
+    <div class="modal-card">
+      <button class="modal-close" id="authModalClose" aria-label="Close">✕</button>
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-tab="login">Login</button>
+        <button class="auth-tab" data-tab="register">Register</button>
+      </div>
+
+      <div class="auth-panel active" id="authLoginPanel">
+        <div class="form-group"><label>Email or Phone</label><input type="text" id="loginEmail" placeholder="you@example.com"></div>
+        <div class="form-group"><label>Password</label><input type="password" id="loginPassword" placeholder="••••••••"></div>
+        <button class="btn-primary" id="loginSubmit" style="width:100%; justify-content:center;">Log In</button>
+        <p class="demo-notice">⚠️ Demo only — no real account system connected yet. Logging in just simulates a session so you can see the wallet/dashboard UI.</p>
+      </div>
+
+      <div class="auth-panel" id="authRegisterPanel">
+        <div class="form-group"><label>Full Name</label><input type="text" id="regName" placeholder="Your name"></div>
+        <div class="form-group"><label>Email or Phone</label><input type="text" id="regEmail" placeholder="you@example.com"></div>
+        <div class="form-group"><label>Password</label><input type="password" id="regPassword" placeholder="••••••••"></div>
+        <button class="btn-primary" id="registerSubmit" style="width:100%; justify-content:center;">Create Account</button>
+        <p class="demo-notice">⚠️ Demo only — no real account is created or stored anywhere.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="site-footer">
+    <div class="wrap footer-grid">
+      <div>
+        <a href="#home" class="logo">Nexus<span>Topup</span></a>
+        <p class="footer-tag">Verified game top-up, fast and simple.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Top-up</h4>
+        <a href="#products">PUBG Mobile</a>
+        <a href="#products">Free Fire</a>
+        <a href="#products">Fortnite</a>
+      </div>
+      <div class="footer-col">
+        <h4>Account</h4>
+        <a href="user-dashboard.html">My Dashboard</a>
+        <a href="#" id="footerLoginLink">Login / Register</a>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <a href="#faq">FAQ</a>
+        <a href="#how">How It Works</a>
+        <a href="https://wa.me/8801766530826" target="_blank" rel="noopener">WhatsApp Us</a>
+      </div>
+    </div>
+    <div class="wrap footer-bottom">
+      <p>&copy; <span id="year"></span> Nexus Topup. Not affiliated with PUBG Mobile, Garena Free Fire, Epic Games, or Moonton — independent verified top-up reseller.</p>
+    </div>
+  </footer>
+
+  <button id="backToTop" class="back-to-top" aria-label="Back to top">↑</button>
+
+  <script>
+/* =========================================================================
+   Nexus Topup — game top-up shop JS
+   No backend/payment gateway is wired up here — order details are collected
+   then handed off to WhatsApp for manual verification, which is how this
+   business model actually works without a merchant account integration.
+   ========================================================================= */
+
+// Example packages — replace prices/amounts with your real rates before launch.
+const PRODUCTS = {
+  pubg: {
+    name: 'PUBG Mobile', idLabel: 'Player ID (UID)', needsZone: false,
+    packages: [
+      { amount: '60 UC',    price: 85,  bonus: '' },
+      { amount: '325 UC',   price: 420, bonus: '+25 bonus' },
+      { amount: '660 UC',   price: 830, bonus: '+60 bonus' },
+      { amount: '1800 UC',  price: 2150, bonus: '+300 bonus' },
+    ]
+  },
+  freefire: {
+    name: 'Free Fire — UID Diamond Top-up', idLabel: 'Player ID (UID)', needsZone: false,
+    packages: [
+      { amount: '100 Diamonds',  price: 80,  bonus: '' },
+      { amount: '310 Diamonds',  price: 240, bonus: '+10 bonus' },
+      { amount: '520 Diamonds',  price: 400, bonus: '+20 bonus' },
+      { amount: '1080 Diamonds', price: 800, bonus: '+80 bonus' },
+    ]
+  },
+  fortnite: {
+    name: 'Fortnite', idLabel: 'Epic Games Username', needsZone: false,
+    packages: [
+      { amount: '1000 V-Bucks', price: 750,  bonus: '' },
+      { amount: '2800 V-Bucks', price: 2000, bonus: '+300 bonus' },
+      { amount: '5000 V-Bucks', price: 3500, bonus: '+500 bonus' },
+    ]
+  },
+  mlbb: {
+    name: 'Mobile Legends', idLabel: 'User ID', needsZone: true,
+    packages: [
+      { amount: '86 Diamonds',  price: 90,  bonus: '' },
+      { amount: '172 Diamonds', price: 175, bonus: '' },
+      { amount: '429 Diamonds', price: 420, bonus: '+20 bonus' },
+      { amount: '878 Diamonds', price: 830, bonus: '+50 bonus' },
+    ]
+  },
+  'ff-weekly': {
+    name: 'Free Fire — Weekly Membership', idLabel: 'Player ID (UID)', needsZone: false,
+    packages: [ { amount: 'Weekly Membership', price: 140, bonus: '' } ]
+  },
+  'ff-monthly': {
+    name: 'Free Fire — Monthly Membership', idLabel: 'Player ID (UID)', needsZone: false,
+    packages: [ { amount: 'Monthly Membership', price: 700, bonus: '' } ]
+  },
+  'ff-weekly-lite': {
+    name: 'Free Fire — Weekly Lite', idLabel: 'Player ID (UID)', needsZone: false,
+    packages: [ { amount: 'Weekly Lite', price: 70, bonus: '' } ]
+  },
+  'ff-evo': {
+    name: 'Free Fire — Evo Access', idLabel: 'Player ID (UID)', needsZone: false,
+    packages: [ { amount: 'Evo Access', price: 120, bonus: '' } ]
+  },
+  'ff-ebadge': {
+    name: 'Free Fire — E Badge', idLabel: 'Player ID (UID)', needsZone: false,
+    packages: [ { amount: 'E Badge', price: 50, bonus: '' } ]
+  },
+  'ff-likes': {
+    name: 'Free Fire — Profile Likes', idLabel: 'Player ID (UID)', needsZone: false,
+    packages: [ { amount: '100 Likes', price: 30, bonus: '' }, { amount: '500 Likes', price: 130, bonus: '' } ]
+  },
+  'youtube-premium': {
+    name: 'YouTube Premium', idLabel: 'Google Account Email', needsZone: false,
+    packages: [ { amount: '1 Month', price: 250, bonus: '' }, { amount: '3 Months', price: 700, bonus: '+bonus' } ]
+  },
+  'telegram-premium': {
+    name: 'Telegram Premium', idLabel: 'Telegram Username', needsZone: false,
+    packages: [ { amount: '1 Month', price: 300, bonus: '' }, { amount: '3 Months', price: 850, bonus: '+bonus' } ]
+  },
+  'smm-facebook': {
+    name: 'Facebook Followers/Likes', idLabel: 'Profile/Page Link', needsZone: false,
+    packages: [ { amount: '100 Followers', price: 100, bonus: '' }, { amount: '500 Followers', price: 450, bonus: '' }, { amount: '1000 Likes', price: 800, bonus: '' } ]
+  },
+  'smm-instagram': {
+    name: 'Instagram Followers/Likes', idLabel: 'Profile Link/Username', needsZone: false,
+    packages: [ { amount: '100 Followers', price: 100, bonus: '' }, { amount: '500 Followers', price: 450, bonus: '' }, { amount: '1000 Likes', price: 750, bonus: '' } ]
+  },
+  'smm-tiktok': {
+    name: 'TikTok Followers/Views', idLabel: 'Profile Link/Username', needsZone: false,
+    packages: [ { amount: '100 Followers', price: 90, bonus: '' }, { amount: '1000 Views', price: 60, bonus: '' } ]
+  },
+  'smm-youtube': {
+    name: 'YouTube Views/Subscribers', idLabel: 'Channel/Video Link', needsZone: false,
+    packages: [ { amount: '1000 Views', price: 150, bonus: '' }, { amount: '100 Subscribers', price: 300, bonus: '' } ]
+  },
+  'indonesia-topup': {
+    name: 'Indonesia Server Top-up', idLabel: 'Player ID (UID)', needsZone: false,
+    packages: [ { amount: '100 Diamonds', price: 100, bonus: '' }, { amount: '500 Diamonds', price: 480, bonus: '' } ]
+  },
+  'mystery-box': {
+    name: 'Free Fire Mystery Box', idLabel: 'Player ID (UID)', needsZone: false,
+    packages: [ { amount: '1 Box', price: 50, bonus: '' }, { amount: '5 Boxes', price: 230, bonus: '+bonus box' } ]
+  },
+  'level-up': {
+    name: 'Level Up Package', idLabel: 'Player ID (UID)', needsZone: false,
+    packages: [ { amount: 'Level Up Pass', price: 70, bonus: '' } ]
+  }
+};
+
+// Set this to your real shop WhatsApp number (country code, no +, no spaces)
+const SHOP_WHATSAPP_NUMBER = '8801766530826';
+
+document.addEventListener('DOMContentLoaded', () => {
+
+  /* -----------------------------------------------------------------------
+     MOBILE NAV
+     ----------------------------------------------------------------------- */
+  const navToggle = document.getElementById('navToggle');
+  const navLinks = document.getElementById('navLinks');
+  navToggle.addEventListener('click', () => navLinks.classList.toggle('open'));
+  navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
+
+  /* -----------------------------------------------------------------------
+     SCROLL PROGRESS + BACK TO TOP
+     ----------------------------------------------------------------------- */
+  const progressBar = document.getElementById('progressBar');
+  const backToTop = document.getElementById('backToTop');
+  window.addEventListener('scroll', () => {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    progressBar.style.width = (docHeight > 0 ? (scrollTop/docHeight)*100 : 0) + '%';
+    backToTop.classList.toggle('show', scrollTop > 500);
+  }, { passive: true });
+  backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  /* -----------------------------------------------------------------------
+     FAQ ACCORDION
+     ----------------------------------------------------------------------- */
+  document.querySelectorAll('.faq-item').forEach(item => {
+    item.querySelector('.faq-question').addEventListener('click', () => {
+      const wasOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!wasOpen) item.classList.add('open');
+    });
+  });
+
+  /* -----------------------------------------------------------------------
+     ORDER FLOW STATE
+     ----------------------------------------------------------------------- */
+  const modal = document.getElementById('orderModal');
+  const modalClose = document.getElementById('modalClose');
+  const modalGameTitle = document.getElementById('modalGameTitle');
+  const packageGrid = document.getElementById('packageGrid');
+  const idLabel1 = document.getElementById('idLabel1');
+  const playerIdInput = document.getElementById('playerIdInput');
+  const zoneIdGroup = document.getElementById('zoneIdGroup');
+  const zoneIdInput = document.getElementById('zoneIdInput');
+  const paymentGrid = document.getElementById('paymentGrid');
+  const orderSummary = document.getElementById('orderSummary');
+  const sendOrderBtn = document.getElementById('sendOrderBtn');
+  const toStep3 = document.getElementById('toStep3');
+  const toStep4 = document.getElementById('toStep4');
+
+  let order = { gameKey: null, game: null, pkg: null, playerId: '', zoneId: '', method: null };
+
+  function openOrderModal(productKey){
+    order = { gameKey: productKey, game: PRODUCTS[productKey], pkg: null, playerId: '', zoneId: '', method: null };
+    modalGameTitle.textContent = `${order.game.name} — Select a Package`;
+    idLabel1.textContent = order.game.idLabel;
+    zoneIdGroup.style.display = order.game.needsZone ? 'block' : 'none';
+    playerIdInput.value = '';
+    zoneIdInput.value = '';
+
+    packageGrid.innerHTML = '';
+    order.game.packages.forEach((pkg, i) => {
+      const el = document.createElement('button');
+      el.className = 'package-option';
+      el.innerHTML = `<div class="package-amount">${pkg.amount}</div><div class="package-price">৳${pkg.price}</div>${pkg.bonus ? `<div class="package-bonus">${pkg.bonus}</div>` : ''}`;
+      el.addEventListener('click', () => {
+        packageGrid.querySelectorAll('.package-option').forEach(p => p.classList.remove('selected'));
+        el.classList.add('selected');
+        order.pkg = pkg;
+        goToStep(2);
+      });
+      packageGrid.appendChild(el);
+    });
+
+    paymentGrid.querySelectorAll('.payment-option').forEach(p => p.classList.remove('selected'));
+    order.method = null;
+
+    goToStep(1);
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeOrderModal(){
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  document.querySelectorAll('.product-card').forEach(card => {
+    card.addEventListener('click', () => openOrderModal(card.dataset.product));
+  });
+  modalClose.addEventListener('click', closeOrderModal);
+  modal.addEventListener('click', (e) => { if (e.target === modal) closeOrderModal(); });
+
+  /* -----------------------------------------------------------------------
+     CATEGORY FILTER
+     ----------------------------------------------------------------------- */
+  const categoryPills = document.querySelectorAll('.category-pill');
+  const productCards = document.querySelectorAll('.product-card');
+  categoryPills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      categoryPills.forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      const filter = pill.dataset.filter;
+      productCards.forEach(card => {
+        const match = filter === 'all' || card.dataset.category === filter;
+        card.classList.toggle('hidden', !match);
+      });
+    });
+  });
+
+  /* -----------------------------------------------------------------------
+     SEARCH (filters visible product cards by title text)
+     ----------------------------------------------------------------------- */
+  const searchInput = document.getElementById('searchInput');
+  if (searchInput){
+    searchInput.addEventListener('input', () => {
+      const q = searchInput.value.trim().toLowerCase();
+      // typing in search resets the category filter to "all" so results aren't hidden by it
+      if (q){
+        categoryPills.forEach(p => p.classList.remove('active'));
+        document.querySelector('.category-pill[data-filter="all"]').classList.add('active');
+      }
+      productCards.forEach(card => {
+        const title = card.querySelector('h3').textContent.toLowerCase();
+        card.classList.toggle('hidden', q && !title.includes(q));
+      });
+    });
+  }
+
+  /* -----------------------------------------------------------------------
+     LIVE ORDERS TICKER (simulated — no real backend feed)
+     ----------------------------------------------------------------------- */
+  const liveOrdersBody = document.getElementById('liveOrdersBody');
+  const sampleNames = ['Tanvir R.', 'Mim A.', 'Rifat H.', 'Sadia K.', 'Arif N.', 'Nusrat J.', 'Fahim K.', 'Priya D.'];
+  const sampleItems = ['Free Fire — 100 Diamonds', 'PUBG — 660 UC', 'Fortnite — 1000 V-Bucks', 'YouTube Premium — 1 Month', 'Instagram — 100 Followers', 'Mobile Legends — 172 Diamonds', 'Free Fire Weekly Membership'];
+
+  function addLiveOrderRow(){
+    const tr = document.createElement('tr');
+    tr.className = 'order-row-new';
+    const name = sampleNames[Math.floor(Math.random()*sampleNames.length)];
+    const item = sampleItems[Math.floor(Math.random()*sampleItems.length)];
+    const status = Math.random() > 0.25 ? 'completed' : 'pending';
+    tr.innerHTML = `<td>Just now</td><td>${name}</td><td>${item}</td><td><span class="status-pill status-${status}">${status}</span></td>`;
+    liveOrdersBody.prepend(tr);
+    while (liveOrdersBody.children.length > 8) liveOrdersBody.removeChild(liveOrdersBody.lastChild);
+  }
+  if (liveOrdersBody){
+    for (let i = 0; i < 5; i++) addLiveOrderRow();
+    setInterval(addLiveOrderRow, 6000);
+  }
+
+  /* -----------------------------------------------------------------------
+     WALLET (demo only — in-memory balance, not connected to real payments)
+     ----------------------------------------------------------------------- */
+  let walletBalance = 0;
+  const walletAmount = document.getElementById('walletAmount');
+  const walletBadge = document.getElementById('walletBadge');
+  function renderWallet(){ if (walletAmount) walletAmount.textContent = '৳' + walletBalance; }
+  renderWallet();
+  if (walletBadge){
+    walletBadge.addEventListener('click', () => {
+      if (sessionStorage.getItem('nexusUserDemoSession') === 'true') window.location.href = 'user-dashboard.html';
+      else openAuthModal();
+    });
+  }
+
+  /* -----------------------------------------------------------------------
+     LOGIN / REGISTER MODAL (demo only — no real accounts)
+     ----------------------------------------------------------------------- */
+  const authModal = document.getElementById('authModal');
+  const authModalClose = document.getElementById('authModalClose');
+  const loginNavBtn = document.getElementById('loginNavBtn');
+  const footerLoginLink = document.getElementById('footerLoginLink');
+  const authTabs = document.querySelectorAll('.auth-tab');
+
+  function openAuthModal(){ authModal.classList.add('active'); document.body.style.overflow = 'hidden'; }
+  function closeAuthModal(){ authModal.classList.remove('active'); document.body.style.overflow = ''; }
+
+  if (loginNavBtn) loginNavBtn.addEventListener('click', () => {
+    if (loginNavBtn.textContent === 'My Account') window.location.href = 'user-dashboard.html';
+    else openAuthModal();
+  });
+  if (footerLoginLink) footerLoginLink.addEventListener('click', (e) => { e.preventDefault(); openAuthModal(); });
+  if (authModalClose) authModalClose.addEventListener('click', closeAuthModal);
+  if (authModal) authModal.addEventListener('click', (e) => { if (e.target === authModal) closeAuthModal(); });
+
+  authTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      authTabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('authLoginPanel').classList.toggle('active', tab.dataset.tab === 'login');
+      document.getElementById('authRegisterPanel').classList.toggle('active', tab.dataset.tab === 'register');
+    });
+  });
+
+  const loginSubmit = document.getElementById('loginSubmit');
+  if (loginSubmit){
+    loginSubmit.addEventListener('click', () => {
+      // Demo only: simulates a logged-in state and gives a starter demo balance.
+      walletBalance = 500;
+      renderWallet();
+      sessionStorage.setItem('nexusUserDemoSession', 'true');
+      sessionStorage.setItem('nexusUserDemoBalance', String(walletBalance));
+      if (loginNavBtn) loginNavBtn.textContent = 'My Account';
+      closeAuthModal();
+    });
+  }
+  const registerSubmit = document.getElementById('registerSubmit');
+  if (registerSubmit){
+    registerSubmit.addEventListener('click', () => {
+      walletBalance = 0;
+      renderWallet();
+      sessionStorage.setItem('nexusUserDemoSession', 'true');
+      sessionStorage.setItem('nexusUserDemoBalance', String(walletBalance));
+      if (loginNavBtn) loginNavBtn.textContent = 'My Account';
+      closeAuthModal();
+    });
+  }
+
+  // Restore demo session on page load/refresh (still just a UI convenience, not real auth)
+  if (sessionStorage.getItem('nexusUserDemoSession') === 'true'){
+    walletBalance = parseInt(sessionStorage.getItem('nexusUserDemoBalance') || '0', 10);
+    renderWallet();
+    if (loginNavBtn) loginNavBtn.textContent = 'My Account';
+  }
+
+  /* -----------------------------------------------------------------------
+     STEP NAVIGATION
+     ----------------------------------------------------------------------- */
+  function goToStep(n){
+    document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('step' + n).classList.add('active');
+    document.querySelectorAll('.step-dot').forEach(dot => {
+      const step = parseInt(dot.dataset.step, 10);
+      dot.classList.toggle('active', step === n);
+      dot.classList.toggle('done', step < n);
+    });
+  }
+
+  document.querySelectorAll('[data-back]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const current = document.querySelector('.step-panel.active').id;
+      const n = parseInt(current.replace('step',''), 10);
+      if (n > 1) goToStep(n - 1);
+    });
+  });
+
+  toStep3.addEventListener('click', () => {
+    const playerId = playerIdInput.value.trim();
+    const zoneId = zoneIdInput.value.trim();
+    if (!playerId){
+      playerIdInput.style.borderColor = '#f472b6';
+      playerIdInput.focus();
+      return;
+    }
+    if (order.game.needsZone && !zoneId){
+      zoneIdInput.style.borderColor = '#f472b6';
+      zoneIdInput.focus();
+      return;
+    }
+    order.playerId = playerId;
+    order.zoneId = zoneId;
+    goToStep(3);
+  });
+
+  paymentGrid.querySelectorAll('.payment-option').forEach(btn => {
+    btn.addEventListener('click', () => {
+      paymentGrid.querySelectorAll('.payment-option').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      order.method = btn.dataset.method;
+    });
+  });
+
+  toStep4.addEventListener('click', () => {
+    if (!order.method){
+      paymentGrid.style.outline = '1px solid #f472b6';
+      setTimeout(() => paymentGrid.style.outline = 'none', 1200);
+      return;
+    }
+
+    const idLine = order.game.needsZone
+      ? `${order.game.idLabel}: <strong>${order.playerId}</strong> (Zone: <strong>${order.zoneId}</strong>)`
+      : `${order.game.idLabel}: <strong>${order.playerId}</strong>`;
+
+    orderSummary.innerHTML = `
+      <div><span>Game</span><strong>${order.game.name}</strong></div>
+      <div><span>Package</span><strong>${order.pkg.amount}</strong></div>
+      <div><span>Price</span><strong>৳${order.pkg.price}</strong></div>
+      <div><span>${order.game.idLabel}</span><strong>${order.playerId}</strong></div>
+      ${order.game.needsZone ? `<div><span>Zone ID</span><strong>${order.zoneId}</strong></div>` : ''}
+      <div><span>Payment</span><strong>${order.method}</strong></div>
+    `;
+
+    const message =
+`Hi Nexus Topup! I'd like to place a top-up order:
+
+Game: ${order.game.name}
+Package: ${order.pkg.amount} (৳${order.pkg.price})
+${order.game.idLabel}: ${order.playerId}${order.game.needsZone ? `\nZone ID: ${order.zoneId}` : ''}
+Payment method: ${order.method}
+
+Please confirm and let me know how to complete payment.`;
+
+    sendOrderBtn.href = `https://wa.me/${SHOP_WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+    goToStep(4);
+  });
+
+});
+
+</script>
+</body>
+</html>
